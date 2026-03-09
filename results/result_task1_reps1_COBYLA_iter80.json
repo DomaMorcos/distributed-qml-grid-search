@@ -1,0 +1,11 @@
+{
+  "reps": 1,
+  "optimizer": "COBYLA",
+  "max_iter": 80,
+  "train_accuracy": 0.6571,
+  "test_accuracy": 0.5667,
+  "training_time_s": 9.08,
+  "n_qubits": 4,
+  "seed": 42,
+  "task_id": 1
+}

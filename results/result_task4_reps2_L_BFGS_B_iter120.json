@@ -1,0 +1,11 @@
+{
+  "reps": 2,
+  "optimizer": "L_BFGS_B",
+  "max_iter": 120,
+  "train_accuracy": 0.7143,
+  "test_accuracy": 0.5,
+  "training_time_s": 121.27,
+  "n_qubits": 4,
+  "seed": 42,
+  "task_id": 4
+}
