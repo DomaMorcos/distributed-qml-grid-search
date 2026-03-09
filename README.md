@@ -1,5 +1,7 @@
 # Distributed Quantum Machine Learning Grid Search
 
+[![Docker Image CI](https://github.com/DomaMorcos/distributed-qml-grid-search/actions/workflows/docker.yml/badge.svg)](https://github.com/DomaMorcos/distributed-qml-grid-search/actions/workflows/docker.yml)
+
 Orchestrating parameterized **Variational Quantum Classifier (VQC)** hyperparameter
 grid search across an HPC cluster using containerized Qiskit simulations, Slurm
 job arrays, and automated CI/CD.
@@ -109,6 +111,8 @@ To expand the grid, add rows to `params.csv` and update `--array=1-N` in
 
 The local lab uses a **single lightweight VM** running both `slurmctld` and `slurmd` plus Docker.
 This keeps host resource usage minimal while still demonstrating real Slurm job scheduling with queuing.
+
+Developed and tested locally on a laptop (13th Gen Intel i7-13620H, 10 Cores) running Fedora Linux, demonstrating the ability to simulate and orchestrate lightweight HPC environments on consumer hardware.
 
 ```bash
 cd infrastructure/
@@ -362,4 +366,8 @@ scrape_configs:
 - **Shared storage**: For production, use NFS or a parallel filesystem for `results/`
 - **Monitoring**: Deploy `node_exporter` on every node; Prometheus scrapes all targets automatically
 - **Network**: All nodes must be on the same private network and able to resolve hostnames
+
+## GPU Acceleration Path
+
+While this local grid search utilizes CPU-based statevector simulation (optimal for <15 qubit VQC circuits), the infrastructure is designed to scale. For deeper circuits (20+ qubits), the next phase of this pipeline involves configuring Slurm's Generic Resource (GRES) scheduling to allocate NVIDIA GPUs to the compute nodes, utilizing `qiskit-aer-gpu` and `cuQuantum` inside the Docker container to accelerate the heavy statevector matrix multiplications.
 
