@@ -1,0 +1,5 @@
+task_id,reps,optimizer,max_iter
+1,1,COBYLA,80
+2,2,COBYLA,100
+3,3,SPSA,100
+4,2,L_BFGS_B,120
