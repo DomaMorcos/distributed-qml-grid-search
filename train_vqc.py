@@ -22,7 +22,6 @@ from pathlib import Path
 
 import numpy as np
 from qiskit.circuit.library import RealAmplitudes, ZZFeatureMap
-from qiskit_aer import AerSimulator
 from qiskit_machine_learning.algorithms import VQC
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
@@ -48,7 +47,7 @@ OPTIMIZERS = {
 
 def _load_optimizer(name: str, max_iter: int):
     """Dynamically instantiate a Qiskit optimizer by name."""
-    from qiskit_algorithms import optimizers as qopt
+    from qiskit_machine_learning import optimizers as qopt
 
     cls = getattr(qopt, name, None)
     if cls is None:
@@ -98,8 +97,6 @@ def build_and_train(
     feature_map = ZZFeatureMap(feature_dimension=feature_dim, reps=2)
     ansatz = RealAmplitudes(num_qubits=feature_dim, reps=reps)
     optimizer = _load_optimizer(optimizer_name, max_iter)
-
-    simulator = AerSimulator(method="statevector")
 
     vqc = VQC(
         feature_map=feature_map,
