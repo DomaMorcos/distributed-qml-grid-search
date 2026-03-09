@@ -1,0 +1,223 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "CPU Usage %",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.7 },
+              { "color": "red", "value": 0.9 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "1 - avg by(instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[2m]))",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "title": "Memory Usage %",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.7 },
+              { "color": "red", "value": 0.9 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)",
+          "legendFormat": "{{instance}}"
+        }
+      ]
+    },
+    {
+      "title": "Disk I/O (read/write bytes/s)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": { "unit": "Bps" },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_disk_read_bytes_total{device=~\"sda|vda\"}[2m])",
+          "legendFormat": "read {{instance}}"
+        },
+        {
+          "expr": "rate(node_disk_written_bytes_total{device=~\"sda|vda\"}[2m])",
+          "legendFormat": "write {{instance}}"
+        }
+      ]
+    },
+    {
+      "title": "Network Traffic (bytes/s)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": { "unit": "Bps" },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total{device!~\"lo|veth.*\"}[2m])",
+          "legendFormat": "rx {{instance}} {{device}}"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total{device!~\"lo|veth.*\"}[2m])",
+          "legendFormat": "tx {{instance}} {{device}}"
+        }
+      ]
+    },
+    {
+      "title": "Slurm — Jobs by State",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 8, "x": 0, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": { "unit": "short" },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "slurm_queue_running",
+          "legendFormat": "Running"
+        },
+        {
+          "expr": "slurm_queue_pending",
+          "legendFormat": "Pending"
+        },
+        {
+          "expr": "slurm_queue_completed",
+          "legendFormat": "Completed"
+        }
+      ]
+    },
+    {
+      "title": "Slurm — Node States",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 8, "x": 8, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": { "unit": "short" },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "slurm_nodes_idle",
+          "legendFormat": "Idle"
+        },
+        {
+          "expr": "slurm_nodes_alloc",
+          "legendFormat": "Allocated"
+        },
+        {
+          "expr": "slurm_nodes_drain",
+          "legendFormat": "Drained"
+        }
+      ]
+    },
+    {
+      "title": "Slurm — CPUs Allocated vs Total",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 8, "x": 16, "y": 16 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 1 },
+              { "color": "red", "value": 2 }
+            ]
+          },
+          "max": 2
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "slurm_cpus_alloc",
+          "legendFormat": "Allocated CPUs"
+        }
+      ]
+    },
+    {
+      "title": "System Load Average (1m / 5m / 15m)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 22 },
+      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "fieldConfig": {
+        "defaults": { "unit": "short" },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "expr": "node_load1",
+          "legendFormat": "1m {{instance}}"
+        },
+        {
+          "expr": "node_load5",
+          "legendFormat": "5m {{instance}}"
+        },
+        {
+          "expr": "node_load15",
+          "legendFormat": "15m {{instance}}"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["qml", "slurm", "hpc"],
+  "templating": {
+    "list": [
+      {
+        "current": { "selected": false, "text": "Prometheus", "value": "Prometheus" },
+        "hide": 0,
+        "includeAll": false,
+        "name": "DS_PROMETHEUS",
+        "query": "prometheus",
+        "type": "datasource"
+      }
+    ]
+  },
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "QML Grid Search — Cluster Monitor",
+  "uid": "qml-cluster-monitor",
+  "version": 1
+}

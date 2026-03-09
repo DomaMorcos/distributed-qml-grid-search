@@ -15,3 +15,6 @@
 
 - name: Phase 4 — Deploy project files to master
   import_playbook: deploy-project.yml
+
+- name: Phase 5 — Deploy monitoring (Prometheus + Grafana)
+  import_playbook: deploy-monitoring.yml

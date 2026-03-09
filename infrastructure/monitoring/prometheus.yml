@@ -1,0 +1,22 @@
+# Prometheus configuration for QML Grid Search cluster monitoring
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "node"
+    static_configs:
+      - targets: ["qml-node:9100"]
+        labels:
+          role: "all-in-one"
+
+  - job_name: "slurm"
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["qml-node:9092"]
+        labels:
+          cluster: "qml-cluster"
