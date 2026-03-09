@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.git/
+.github/
+results/
+slurm-*.out
+*.tar
+.venv/
+venv/
+.vscode/
+.idea/
