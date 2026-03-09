@@ -1,0 +1,67 @@
+---
+# deploy-project.yml — Copy QML project files + build Docker image on node
+
+- name: Deploy project files and Docker image
+  hosts: master
+  become: true
+  tasks:
+
+    - name: Create project directory
+      file:
+        path: /home/vagrant/qml-project
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: "0755"
+
+    - name: Copy training script
+      copy:
+        src: ../../train_vqc.py
+        dest: /home/vagrant/qml-project/train_vqc.py
+        owner: vagrant
+        group: vagrant
+        mode: "0644"
+
+    - name: Copy parameter file
+      copy:
+        src: ../../params.csv
+        dest: /home/vagrant/qml-project/params.csv
+        owner: vagrant
+        group: vagrant
+        mode: "0644"
+
+    - name: Copy Slurm batch script
+      copy:
+        src: ../../run_grid_search.sh
+        dest: /home/vagrant/qml-project/run_grid_search.sh
+        owner: vagrant
+        group: vagrant
+        mode: "0755"
+
+    - name: Copy Dockerfile
+      copy:
+        src: ../../Dockerfile
+        dest: /home/vagrant/qml-project/Dockerfile
+        owner: vagrant
+        group: vagrant
+        mode: "0644"
+
+    - name: Copy requirements.txt
+      copy:
+        src: ../../requirements.txt
+        dest: /home/vagrant/qml-project/requirements.txt
+        owner: vagrant
+        group: vagrant
+        mode: "0644"
+
+    - name: Create results directory
+      file:
+        path: /home/vagrant/qml-project/results
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: "0755"
+
+    - name: Build Docker image on node
+      command: docker build -t qml-grid:latest /home/vagrant/qml-project
+      changed_when: true

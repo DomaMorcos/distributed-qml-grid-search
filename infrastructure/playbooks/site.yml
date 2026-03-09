@@ -1,0 +1,17 @@
+---
+# site.yml — Master playbook: provisions entire cluster end-to-end
+#
+# Usage:
+#   ansible-playbook playbooks/site.yml
+
+- name: Phase 1 — Common cluster setup
+  import_playbook: common.yml
+
+- name: Phase 2 — Start slurmd on compute nodes
+  import_playbook: slurm-compute.yml
+
+- name: Phase 3 — Start slurmctld on master
+  import_playbook: slurm-master.yml
+
+- name: Phase 4 — Deploy project files to master
+  import_playbook: deploy-project.yml

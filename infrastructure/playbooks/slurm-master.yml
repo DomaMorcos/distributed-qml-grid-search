@@ -1,0 +1,36 @@
+---
+# slurm-master.yml — Start slurmctld on the node
+
+- name: Configure slurmctld
+  hosts: master
+  become: true
+  tasks:
+
+    - name: Enable and start slurmctld
+      systemd:
+        name: slurmctld
+        state: restarted
+        enabled: true
+
+    - name: Wait for slurmctld to be responsive
+      command: sinfo
+      register: sinfo_result
+      retries: 10
+      delay: 3
+      until: sinfo_result.rc == 0
+      changed_when: false
+
+    - name: Bring node to idle state
+      command: scontrol update NodeName=qml-node State=IDLE
+      register: idle_result
+      changed_when: idle_result.rc == 0
+      failed_when: false
+
+    - name: Show cluster state
+      command: sinfo -N -l
+      register: cluster_state
+      changed_when: false
+
+    - name: Print cluster state
+      debug:
+        var: cluster_state.stdout_lines

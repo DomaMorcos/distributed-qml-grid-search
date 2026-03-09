@@ -1,0 +1,22 @@
+---
+# slurm-compute.yml — Start slurmd on the node
+
+- name: Configure slurmd
+  hosts: compute
+  become: true
+  tasks:
+
+    - name: Enable and start slurmd
+      systemd:
+        name: slurmd
+        state: restarted
+        enabled: true
+
+    - name: Verify slurmd is running
+      command: systemctl is-active slurmd
+      register: slurmd_status
+      changed_when: false
+
+    - name: Print slurmd status
+      debug:
+        msg: "slurmd on {{ inventory_hostname }}: {{ slurmd_status.stdout }}"

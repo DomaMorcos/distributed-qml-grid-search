@@ -1,0 +1,45 @@
+# =============================================================================
+# slurm.conf — Single-node all-in-one config for QML Grid Search lab
+# =============================================================================
+
+# --- Cluster identity ---
+ClusterName=qml-cluster
+SlurmctldHost=qml-node
+
+# --- Logging ---
+SlurmctldLogFile=/var/log/slurm/slurmctld.log
+SlurmdLogFile=/var/log/slurm/slurmd.log
+SlurmctldPidFile=/run/slurmctld.pid
+SlurmdPidFile=/run/slurmd.pid
+
+# --- Authentication ---
+AuthType=auth/munge
+CryptoType=crypto/munge
+
+# --- Scheduling ---
+SchedulerType=sched/backfill
+SelectType=select/cons_tres
+SelectTypeParameters=CR_Core_Memory
+
+# --- Accounting (minimal) ---
+AccountingStorageType=accounting_storage/none
+JobAcctGatherType=jobacct_gather/none
+
+# --- Process tracking (linuxproc for cgroup v2 compatibility) ---
+ProctrackType=proctrack/linuxproc
+TaskPlugin=task/affinity
+
+# --- Timeouts ---
+SlurmctldTimeout=120
+SlurmdTimeout=120
+InactiveLimit=0
+MinJobAge=300
+KillWait=30
+WaitTime=0
+ReturnToService=2
+
+# --- Partition (single node, oversubscribe for job arrays) ---
+PartitionName=compute Nodes=qml-node Default=YES MaxTime=01:00:00 State=UP OverSubscribe=YES
+
+# --- Compute Node ---
+NodeName=qml-node NodeAddr=192.168.56.10 CPUs=2 RealMemory=2200 State=UNKNOWN

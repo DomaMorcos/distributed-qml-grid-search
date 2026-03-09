@@ -1,0 +1,34 @@
+---
+# deploy-docker.yml — Build QML image on host, load on compute nodes
+# Run from the infrastructure/ directory:
+#   ansible-playbook playbooks/deploy-docker.yml
+
+- name: Load QML Docker image on compute nodes
+  hosts: compute
+  become: true
+  tasks:
+
+    - name: Copy Docker image tarball to compute nodes
+      copy:
+        src: ../files/qml-grid.tar
+        dest: /tmp/qml-grid.tar
+        mode: "0644"
+
+    - name: Load Docker image from tarball
+      command: docker load -i /tmp/qml-grid.tar
+      register: docker_load
+      changed_when: "'Loaded image' in docker_load.stdout"
+
+    - name: Verify image is available
+      command: docker images qml-grid --format "{{ '{{' }}.Repository{{ '}}' }}:{{ '{{' }}.Tag{{ '}}' }}"
+      register: image_check
+      changed_when: false
+
+    - name: Print loaded image
+      debug:
+        var: image_check.stdout
+
+    - name: Clean up tarball
+      file:
+        path: /tmp/qml-grid.tar
+        state: absent

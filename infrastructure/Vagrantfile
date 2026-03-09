@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# =============================================================================
+# Distributed QML Grid Search — Lightweight Single-Node Slurm Lab
+#
+# One all-in-one VM: slurmctld + slurmd + Docker
+# Minimal resource footprint for laptop-based testing
+# =============================================================================
+
+BOX = "ubuntu/jammy64"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = BOX
+  config.ssh.insert_key = true
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.define "qml-node" do |node|
+    node.vm.hostname = "qml-node"
+    node.vm.network "private_network", ip: "192.168.56.10"
+
+    node.vm.provider "virtualbox" do |vb|
+      vb.name   = "qml-node"
+      vb.cpus   = 2
+      vb.memory = 2560
+      vb.linked_clone = true
+      vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
+      vb.customize ["modifyvm", :id, "--audio", "none"]
+      vb.customize ["modifyvm", :id, "--usb", "off"]
+    end
+
+    node.vm.provision "ansible" do |ansible|
+      ansible.playbook       = "playbooks/site.yml"
+      ansible.inventory_path = "inventory/hosts.ini"
+      ansible.limit          = "all"
+      ansible.compatibility_mode = "2.0"
+      ansible.extra_vars = {
+        ansible_python_interpreter: "/usr/bin/python3"
+      }
+      # Pass SSH key path via raw_ssh_args to handle spaces in parent dir
+      ansible.raw_ssh_args = [
+        "-o", "IdentityFile=.vagrant/machines/qml-node/virtualbox/private_key"
+      ]
+    end
+  end
+end
