@@ -4,8 +4,8 @@
 #SBATCH --output=slurm-%A_%a.out
 #SBATCH --error=slurm-%A_%a.err
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=2
-#SBATCH --mem=2G
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=1024M
 #SBATCH --time=00:30:00
 #SBATCH --partition=compute
 # ============================================================================
@@ -41,8 +41,8 @@ mkdir -p "${RESULT_DIR}"
 # --memory      : limit container to allocated memory
 docker run --rm \
     -v "${RESULT_DIR}:/app/results" \
-    --cpus="${SLURM_CPUS_PER_TASK}" \
-    --memory="${SLURM_MEM_PER_NODE}m" \
+    --cpus="1" \
+    --memory="896m" \
     "${IMAGE_NAME}" \
     --task-id "${SLURM_ARRAY_TASK_ID}" \
     --param-file params.csv \

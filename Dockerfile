@@ -10,9 +10,7 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 # ---- Stage 2: Lean runtime image ----
 FROM python:3.11-slim
 
-LABEL maintainer="Doma" \
-      description="Distributed QML Grid Search – VQC Training" \
-      org.opencontainers.image.source="https://github.com/doma/distributed-qml-grid-search"
+LABEL description="Distributed QML Grid Search – VQC Training"
 
 # Copy only the installed packages from builder
 COPY --from=builder /install /usr/local
@@ -20,7 +18,8 @@ COPY --from=builder /install /usr/local
 WORKDIR /app
 
 COPY train_vqc.py params.csv ./
-COPY results/ ./results/
+
+RUN mkdir -p results
 
 # Non-root user for security
 RUN useradd --create-home appuser

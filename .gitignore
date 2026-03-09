@@ -25,3 +25,8 @@ Thumbs.db
 
 # Docker
 *.tar
+
+# Vagrant
+.vagrant/
+infrastructure/.vagrant/
+infrastructure/files/*.tar
